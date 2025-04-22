@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Entrevista - Complexo XP</title>
+  <link rel="icon" href="https://i.postimg.cc/MG7qzW4x/emote.png" type="image/x-icon">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .form, .results {
+      flex: 1;
+      min-width: 300px;
+      background: #2c2c2c;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background-color: #333;
+      color: #e0e0e0;
+      border: 1px solid #555;
+    }
+    select, input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      background-color: #333;
+      color: #e0e0e0;
+    }
+    #idade {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      border: none;
+      font-weight: bold;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.aprovar { background-color: #4CAF50; color: white; }
+    button.reprovar { background-color: #f44336; color: white; }
+    button.limpar { background-color: #555; color: white; }
+    button.copiar { background-color: #2196F3; color: white; margin-top: 5px; }
+    .limpar-individual { background-color: #ff9800; color: white; margin-top: 5px; }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #2c2c2c;
+      border-top: 1px solid #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form">
+      <h2>Entrevista Complexo XP</h2>
+      <input type="text" id="nome" placeholder="Nome Completo (IRL)">
+      <input type="text" id="data" placeholder="Data de Nascimento (Ex: dd/mm/aaaa)">
+      <input type="text" id="idade" placeholder="Idade" disabled>
+      <input type="text" id="discord" placeholder="ID Discord">
+      <input type="text" id="entrevista" placeholder="Número da Entrevista">
+      <select id="rumo">
+        <option value="">Selecione o Rumo</option>
+        <option value="Policia">Policia</option>
+        <option value="Mecanica">Mecanica</option>
+        <option value="Hospital">Hospital</option>
+        <option value="Ilegal">Ilegal</option>
+        <option value="Outro">Outro (especifique abaixo)</option>
+      </select>
+      <input type="text" id="rumoOutro" placeholder="Outro Rumo (se aplicável)">
+      <textarea id="observacoes" placeholder="Observações ou motivo da reprovação..."></textarea>
+      <button class="aprovar" onclick="adicionar('aprovado')">Aprovar</button>
+      <button class="reprovar" onclick="adicionar('reprovado')">Reprovar</button>
+      <button class="limpar" onclick="limparCampos()">Limpar Tudo</button>
+    </div>
+    <div class="results">
+      <h3>Aprovados</h3>
+      <textarea id="resultadoAprovados"></textarea>
+      <button class="copiar" onclick="copiarTexto('resultadoAprovados')">Copiar Aprovados</button>
+      <button class="limpar-individual" onclick="limparResultado('resultadoAprovados')">Limpar Aprovados</button>
+
+      <h3>Reprovados (Detalhado)</h3>
+      <textarea id="resultadoReprovadosDetalhado"></textarea>
+      <button class="copiar" onclick="copiarTexto('resultadoReprovadosDetalhado')">Copiar Detalhado</button>
+      <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosDetalhado')">Limpar Detalhado</button>
+
+      <h3>Reprovados (ID e Motivo)</h3>
+      <textarea id="resultadoReprovadosSimples"></textarea>
+      <button class="copiar" onclick="copiarTexto('resultadoReprovadosSimples')">Copiar Simples</button>
+      <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosSimples')">Limpar Simples</button>
+    </div>
+  </div>
+
+  <footer>
+    <img src="https://i.postimg.cc/WzSNyqxY/Jacky-Confuso.png" alt="Placeholder Image" width="150">
+    <p>© 2025 - Todos os direitos reservados. Feito com ❤ e um pouquinho de preguiça por <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">Jacky Mayers</a> !</p>
+  </footer>
+
+  <script>
+    window.onload = () => {
+      ['nome', 'data', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
+        if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+      });
+      ['resultadoAprovados', 'resultadoReprovadosDetalhado', 'resultadoReprovadosSimples'].forEach(id => {
+        if(localStorage.getItem(id)) document.getElementById(id).textContent = localStorage.getItem(id);
+      });
+      calcularIdade(); // Atualiza idade se já tiver a data salva
+    }
+
+    document.querySelectorAll('input, textarea, select').forEach(el => {
+      el.addEventListener('input', () => {
+        localStorage.setItem(el.id, el.value);
+      });
+    });
+
+    document.getElementById('data').addEventListener('input', calcularIdade);
+
+    function calcularIdade() {
+      const dataInput = document.getElementById('data').value.trim();
+      const idadeCampo = document.getElementById('idade');
+      const dataRegex = /(\d{2})[-\/.]?(\d{2})[-\/.]?(\d{4})/;
+      const match = dataInput.match(dataRegex);
+
+      if (match) {
+        const [dia, mes, ano] = [parseInt(match[1]), parseInt(match[2]) - 1, parseInt(match[3])];
+        const nascimento = new Date(ano, mes, dia);
+        const hoje = new Date();
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const m = hoje.getMonth() - nascimento.getMonth();
+
+        if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+          idade--;
+        }
+
+        idadeCampo.value = `${idade} anos`;
+      } else {
+        idadeCampo.value = '';
+      }
+    }
+
+    function adicionar(status) {
+      const nome = document.getElementById('nome').value.trim();
+      const data = formatarData(document.getElementById('data').value.trim());
+      const idade = document.getElementById('idade').value.trim();
+      const discord = document.getElementById('discord').value.trim();
+      const entrevista = document.getElementById('entrevista').value.trim();
+      const rumoSelect = document.getElementById('rumo').value;
+      const rumoOutro = document.getElementById('rumoOutro').value.trim();
+      const observacoes = document.getElementById('observacoes').value.trim();
+      const rumo = rumoSelect === 'Outro' ? rumoOutro : rumoSelect;
+
+      if (!nome || !data || !discord || !entrevista || !rumo) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      if (status === 'aprovado') {
+        const resultado = `Nome do Aprovado (IRL): ${nome}\nData de Nascimento: ${data} (${idade})\nID Discord: ${discord} |<@${discord}>\nNúmero da Entrevista: ${entrevista}\nRumo: ${rumo}\n${observacoes ? 'Observações: ' + observacoes : ''}\n`;
+        document.getElementById('resultadoAprovados').value += `\n${resultado}\n`;
+        localStorage.setItem('resultadoAprovados', document.getElementById('resultadoAprovados').value);
+      } else {
+        const detalhado = `Nome do reprovado (IRL): ${nome}\nData de Nascimento: ${data} (${idade})\nID Discord: ${discord} |<@${discord}>\nNúmero da Entrevista: ${entrevista}\nRumo: ${rumo}\n${observacoes ? 'Observações: ' + observacoes : ''}\n`;
+        const simples = `${discord} | <@${discord}> - Reprovado Entrevista: ${observacoes ? observacoes : ''}`;
+
+        document.getElementById('resultadoReprovadosDetalhado').value += `\n${detalhado}\n`;
+        document.getElementById('resultadoReprovadosSimples').value += `\n${simples}\n`;
+
+        localStorage.setItem('resultadoReprovadosDetalhado', document.getElementById('resultadoReprovadosDetalhado').value);
+        localStorage.setItem('resultadoReprovadosSimples', document.getElementById('resultadoReprovadosSimples').value);
+      }
+
+      limparCampos(true);
+    }
+
+    function formatarData(data) {
+      const dataRegex = /(\d{2})[-\/.]?(\d{2})[-\/.]?(\d{4})/;
+      const match = data.match(dataRegex);
+      if (match) return `${match[1]}/${match[2]}/${match[3]}`;
+      else {
+        alert('Formato de data inválido. Use: DD-MM-YYYY, DD/MM/YYYY ou DDMMAAAA.');
+        return '';
+      }
+    }
+
+    function limparCampos(aprovacao = false) {
+      ['nome', 'data', 'idade', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
+        document.getElementById(id).value = '';
+        if (!aprovacao) localStorage.removeItem(id);
+      });
+    }
+
+    function limparResultado(id) {
+      document.getElementById(id).value = '';
+      localStorage.removeItem(id);
+    }
+
+    function copiarTexto(id) {
+      const texto = document.getElementById(id);
+      texto.select();
+      document.execCommand('copy');
+      alert('Texto copiado!');
+    }
+  </script>
+</body>
+</html>
