@@ -75,7 +75,7 @@
     <div class="form">
       <h2>Entrevista Complexo XP</h2>
       <input type="text" id="nome" placeholder="Nome Completo (IRL)">
-      <input type="text" id="data" placeholder="Data de Nascimento (Ex: dd/mm/aaaa)">
+      <input type="text" id="data" placeholder="Data de Nascimento (Ex: dd mm aaaa)">
       <input type="text" id="idade" placeholder="Idade" disabled>
       <input type="text" id="discord" placeholder="ID Discord">
       <input type="text" id="entrevista" placeholder="Número da Entrevista">
@@ -138,7 +138,7 @@
     function calcularIdade() {
       const dataInput = document.getElementById('data').value.trim();
       const idadeCampo = document.getElementById('idade');
-      const dataRegex = /(\d{2})[-\/.]?(\d{2})[-\/.]?(\d{4})/;
+      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/; // Suporta dd/mm/aaaa, dd-mm-aaaa, dd.mm.aaaa, e dd mm aaaa
       const match = dataInput.match(dataRegex);
 
       if (match) {
@@ -156,6 +156,31 @@
       } else {
         idadeCampo.value = '';
       }
+    }
+
+    function limparCampos(aprovacao = false) {
+      if (!aprovacao && !confirm("Tem certeza de que deseja limpar todos os campos?")) {
+        return; // Se o usuário cancelar, não limpa os campos
+      }
+      ['nome', 'data', 'idade', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
+        document.getElementById(id).value = '';
+        if (!aprovacao) localStorage.removeItem(id);
+      });
+    }
+
+    function limparResultado(id) {
+      if (!confirm("Tem certeza de que deseja limpar este campo de resultados?")) {
+        return; // Se o usuário cancelar, não limpa o campo
+      }
+      document.getElementById(id).value = '';
+      localStorage.removeItem(id);
+    }
+
+    function copiarTexto(id) {
+      const texto = document.getElementById(id);
+      texto.select();
+      document.execCommand('copy');
+      alert('Texto copiado!');
     }
 
     function adicionar(status) {
@@ -193,32 +218,13 @@
     }
 
     function formatarData(data) {
-      const dataRegex = /(\d{2})[-\/.]?(\d{2})[-\/.]?(\d{4})/;
+      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/; // Suporta dd/mm/aaaa, dd-mm-aaaa, dd.mm.aaaa, e dd mm aaaa
       const match = data.match(dataRegex);
       if (match) return `${match[1]}/${match[2]}/${match[3]}`;
       else {
-        alert('Formato de data inválido. Use: DD-MM-YYYY, DD/MM/YYYY ou DDMMAAAA.');
+        alert('Formato de data inválido. Use: DD-MM-YYYY, DD/MM/YYYY ou DD MM AAAA.');
         return '';
       }
-    }
-
-    function limparCampos(aprovacao = false) {
-      ['nome', 'data', 'idade', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
-        document.getElementById(id).value = '';
-        if (!aprovacao) localStorage.removeItem(id);
-      });
-    }
-
-    function limparResultado(id) {
-      document.getElementById(id).value = '';
-      localStorage.removeItem(id);
-    }
-
-    function copiarTexto(id) {
-      const texto = document.getElementById(id);
-      texto.select();
-      document.execCommand('copy');
-      alert('Texto copiado!');
     }
   </script>
 </body>
