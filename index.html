@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Formulário de Entrevista - Complexo XP</title>
-  <link rel="icon" href="https://i.postimg.cc/MG7qzW4x/emote.png" type="image/x-icon">
+  <link rel="icon" href="https://i.postimg.cc/MG7qzW4x/emote.png" type="image/x-icon" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
       background-color: #121212;
       color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    hr {
+      border: 0;
+      height: 1px;
+      background: #333;
+      margin-bottom: 20px;
     }
     .container {
       display: flex;
@@ -20,47 +26,135 @@
     .form, .results {
       flex: 1;
       min-width: 300px;
-      background: #2c2c2c;
+      background: #232323;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.07);
+    }
+    .form h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
     }
     textarea {
       width: 100%;
       height: 100px;
-      background-color: #333;
+      background-color: #232323;
       color: #e0e0e0;
-      border: 1px solid #555;
+      border: 1px solid #444;
+      resize: vertical;
+      border-radius: 5px;
+      font-size: 1em;
+      margin-bottom: 8px;
     }
-    select, input, textarea {
+    select, input {
       width: 100%;
       margin-bottom: 10px;
       padding: 8px;
       border-radius: 5px;
-      border: 1px solid #555;
-      background-color: #333;
+      border: 1px solid #444;
+      background-color: #232323;
       color: #e0e0e0;
+      font-size: 1em;
     }
     #idade {
-      background-color: #1e1e1e;
-      color: #e0e0e0;
+      background-color: #181818;
+      color: #fff;
       border: none;
       font-weight: bold;
       margin-top: -10px;
       margin-bottom: 10px;
     }
     button {
-      padding: 10px;
-      margin-right: 10px;
+      padding: 9px 12px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      color: white;
+      font-size: 1em;
+      transition: background 0.2s;
+      margin-bottom: 0;
     }
-    button.aprovar { background-color: #4CAF50; color: white; }
-    button.reprovar { background-color: #f44336; color: white; }
-    button.limpar { background-color: #555; color: white; }
-    button.copiar { background-color: #2196F3; color: white; margin-top: 5px; }
-    .limpar-individual { background-color: #ff9800; color: white; margin-top: 5px; }
+    button.aprovar { background-color: #4CAF50; margin-right: 7px; }
+    button.reprovar { background-color: #f44336; margin-right: 7px;}
+    button.limpar { background-color: #555; margin-right: 7px;}
+    button.nova { background-color: #ff4444;}
+    button.copiar-visual {
+      background-color: #2196F3;
+      margin-right: 8px;
+      margin-top: 0;
+    }
+    button.limpar-individual { background-color: #ff9800; margin-top: 5px;}
+    .botoes-rumo {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 13px;
+    }
+    .botoes-rumo button {
+      flex: 1 1 160px;
+      background: #1e88e5;
+      font-weight: bold;
+      font-size: 1em;
+      margin: 0;
+      margin-bottom: 0;
+      border-radius: 7px;
+      border: none;
+      color: #fff;
+      height: 40px;
+    }
+    .custom-row-btns {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .custom-row-btns button {
+      flex: 1 1 50%;
+      margin-top: 0;
+      margin-bottom: 0;
+      min-width: 120px;
+    }
+    .total-bar {
+      background: transparent;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.08em;
+      margin: 28px 0 12px 0;
+      text-align: left;
+      letter-spacing: .5px;
+    }
+    .total-bar span {
+      color: #ff9800;
+      font-weight: bold;
+    }
+    .rumos-bar {
+      display: inline-block;
+      margin-left: 16px;
+      font-size: 1em;
+      letter-spacing: .5px;
+    }
+    .rumos-bar span {
+      color: #ff9800;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .visual-bar {
+      background: transparent;
+      color: #ffe082;
+      font-weight: bold;
+      font-size: 1.04em;
+      margin-bottom: 8px;
+      margin-top: 4px;
+      text-align: left;
+      letter-spacing: .5px;
+      padding: 0;
+    }
+    .visual-bar .rumos-bar span {
+      color: #ffe082;
+    }
+    .descricao-geral {
+      margin-bottom: 7px;
+      margin-top: 10px;
+    }
     footer {
       text-align: center;
       margin-top: 20px;
@@ -68,17 +162,44 @@
       background-color: #2c2c2c;
       border-top: 1px solid #555;
     }
+    .lembrete {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #222;
+      border: 1px solid #555;
+      border-radius: 5px;
+      color: #ff9800;
+      font-weight: bold;
+    }
+    .images-container img {
+      width: 100px;
+      height: auto;
+      margin-right: 10px;
+    }
+    .btn-full {
+      width: 100%;
+      margin-top: 14px;
+      background: #2196F3;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 7px;
+      font-size: 1.07em;
+      height: 38px;
+    }
   </style>
 </head>
 <body>
+  <hr>
   <div class="container">
     <div class="form">
       <h2>Entrevista Complexo XP</h2>
-      <input type="text" id="nome" placeholder="Nome Completo (IRL)">
-      <input type="text" id="data" placeholder="Data de Nascimento (Ex: dd mm aaaa)">
-      <input type="text" id="idade" placeholder="Formato de data inválido!" disabled>
-      <input type="text" id="discord" placeholder="ID Discord">
-      <input type="text" id="entrevista" placeholder="Número da Entrevista">
+      <input type="text" id="nome" placeholder="Nome Completo (IRL)" />
+      <input type="text" id="data" placeholder="Data de Nascimento (Ex: dd mm aaaa)" />
+      <input type="text" id="idade" placeholder="Idade" disabled style="font-weight:bold;" />
+      <input type="text" id="discord" placeholder="ID Discord" />
+      <input type="text" id="entrevista" placeholder="Número da Entrevista" />
       <select id="rumo">
         <option value="">Selecione o Rumo</option>
         <option value="Policia">Policia</option>
@@ -87,58 +208,125 @@
         <option value="Ilegal">Ilegal</option>
         <option value="Outro">Outro (especifique abaixo)</option>
       </select>
-      <input type="text" id="rumoOutro" placeholder="Outro Rumo (se aplicável)">
+      <input type="text" id="rumoOutro" placeholder="Outro Rumo (se aplicável)" />
       <textarea id="observacoes" placeholder="Observações ou motivo da reprovação..."></textarea>
-      <button class="aprovar" onclick="adicionar('aprovado')">Aprovar</button>
-      <button class="reprovar" onclick="adicionar('reprovado')">Reprovar</button>
-      <button class="limpar" onclick="limparCampos()">Limpar Tudo</button>
+      <div style="display:flex; gap:10px; margin-bottom:16px;">
+        <button class="aprovar" onclick="adicionar('aprovado')">Aprovar</button>
+        <button class="reprovar" onclick="adicionar('reprovado')">Reprovar</button>
+        <button class="limpar" onclick="limparCampos()">Limpar Tudo</button>
+        <button class="nova" onclick="limparStorageGeral()">Nova Entrevista (Limpar dados salvos)</button>
+      </div>
+      <div class="total-bar" id="totalBarForm">
+        Total: <span id="totalGeral">0</span> | 
+        Aprovados: <span id="aprovadosGeral">0</span> | 
+        Reprovados: <span id="reprovadosGeral">0</span>
+        <span class="rumos-bar">
+          <span>policia: <span id="aprovadosPolicia">0</span></span>|
+          <span>hospital: <span id="aprovadosHospital">0</span></span>|
+          <span>mecânica: <span id="aprovadosMecanica">0</span></span>|
+          <span>ilegal: <span id="aprovadosIlegal">0</span></span>|
+          <span>outros: <span id="aprovadosOutro">0</span></span>
+        </span>
+      </div>
+      <div class="descricao-geral">
+        <span style="color: #ffe082; font-size: 0.97em;">
+          <b>Aqui ficam salvos todos os aprovados por rumo até que você clique em "Nova Entrevista (Limpar dados salvos)".</b><br>
+          Limpar apenas os campos visuais de aprovados/reprovados não zera estes dados.(Na teoria)
+        </span>
+      </div>
+      <div class="botoes-rumo">
+        <button onclick="copiarPorRumo('Policia', false)">Copiar Policia</button>
+        <button onclick="copiarPorRumo('Mecanica', false)">Copiar Mecanica</button>
+        <button onclick="copiarPorRumo('Hospital', false)">Copiar Hospital</button>
+        <button onclick="copiarPorRumo('Ilegal', false)">Copiar Ilegal</button>
+        <button onclick="copiarPorRumo('Outro', false)">Copiar Outro</button>
+      </div>
     </div>
+
     <div class="results">
+      <div class="visual-bar" id="visualBarResults">
+        Visual | Aprovados: <span id="aprovadosVisual">0</span> | Reprovados: <span id="reprovadosVisual">0</span>
+        <span class="rumos-bar">
+          <span>policia: <span id="aprovadosPoliciaVisual">0</span></span>|
+          <span>hospital: <span id="aprovadosHospitalVisual">0</span></span>|
+          <span>mecânica: <span id="aprovadosMecanicaVisual">0</span></span>|
+          <span>ilegal: <span id="aprovadosIlegalVisual">0</span></span>|
+          <span>outros: <span id="aprovadosOutroVisual">0</span></span>
+        </span>
+      </div>
       <h3>Aprovados</h3>
       <textarea id="resultadoAprovados"></textarea>
-      <button class="copiar" onclick="copiarTexto('resultadoAprovados')">Copiar Aprovados</button>
-      <button class="limpar-individual" onclick="limparResultado('resultadoAprovados')">Limpar Aprovados</button>
+      <div class="custom-row-btns">
+        <button class="copiar-visual" onclick="copiarTexto('resultadoAprovados')">Copiar Aprovados (Campo Visual)</button>
+        <button class="limpar-individual" onclick="limparResultado('resultadoAprovados')">Limpar Aprovados</button>
+      </div>
 
       <h3>Reprovados (Detalhado)</h3>
       <textarea id="resultadoReprovadosDetalhado"></textarea>
-      <button class="copiar" onclick="copiarTexto('resultadoReprovadosDetalhado')">Copiar Detalhado</button>
-      <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosDetalhado')">Limpar Detalhado</button>
+      <div class="custom-row-btns">
+        <button class="copiar-visual" onclick="copiarTexto('resultadoReprovadosDetalhado')">Copiar Detalhado</button>
+        <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosDetalhado')">Limpar Detalhado</button>
+      </div>
 
       <h3>Reprovados (ID e Motivo)</h3>
       <textarea id="resultadoReprovadosSimples"></textarea>
-      <button class="copiar" onclick="copiarTexto('resultadoReprovadosSimples')">Copiar Simples</button>
-      <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosSimples')">Limpar Simples</button>
+      <div class="custom-row-btns">
+        <button class="copiar-visual" onclick="copiarTexto('resultadoReprovadosSimples')">Copiar Simples</button>
+        <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosSimples')">Limpar Simples</button>
+      </div>
+
+      <div class="botoes-rumo" style="margin-top:17px;">
+        <button onclick="copiarPorRumo('Policia', true)">Copiar Policia</button>
+        <button onclick="copiarPorRumo('Mecanica', true)">Copiar Mecanica</button>
+        <button onclick="copiarPorRumo('Hospital', true)">Copiar Hospital</button>
+        <button onclick="copiarPorRumo('Ilegal', true)">Copiar Ilegal</button>
+        <button onclick="copiarPorRumo('Outro', true)">Copiar Outro</button>
+      </div>
+
+      <button class="btn-full" onclick="salvarTxtComDataHora()">Salvar entrevista completa (TXT)</button>
     </div>
   </div>
 
+  <div class="images-container" style="margin-top: 20px;">
+    <img src="https://i.postimg.cc/HxQrf0bf/image.png" alt="Imagem 1" title="Clique com o botão direito para abrir ou copiar" />
+    <img src="https://i.postimg.cc/tTHTt18D/image.png" alt="Imagem 2" title="Clique com o botão direito para abrir ou copiar" />
+  </div>
+
+  <div class="lembrete">
+    Lembrete: Ao reprovar, lembre-se de remover a tag "Entrevista" e adicionar a tag "Visitante".
+  </div>
+
   <footer>
-    <img src="https://i.postimg.cc/WzSNyqxY/Jacky-Confuso.png" alt="Placeholder Image" width="150">
-    <p>© 2025 - Todos os direitos reservados. Feito com ❤, ajuda de IA e um pouquinho de preguiça por <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">Jacky Mayers</a> !</p>
+    <img src="https://i.postimg.cc/WzSNyqxY/Jacky-Confuso.png" alt="Placeholder Image" width="150" />
+    <p>
+      © 2025 - Todos os direitos reservados. Feito com ❤, ajuda de IA e um pouquinho de preguiça por
+      <a href="https://jackymayers.github.io/" target="_blank" style="color: #e0e0e0;">Jacky Mayers</a>!
+    </p>
   </footer>
 
   <script>
     window.onload = () => {
       ['nome', 'data', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
-        if(localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
+        if (localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
       });
       ['resultadoAprovados', 'resultadoReprovadosDetalhado', 'resultadoReprovadosSimples'].forEach(id => {
-        if(localStorage.getItem(id)) document.getElementById(id).textContent = localStorage.getItem(id);
+        if (localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
       });
-      calcularIdade(); // Atualiza idade se já tiver a data salva
-    }
-
+      calcularIdade();
+      atualizarContadores();
+      atualizarContadorVisual();
+    };
     document.querySelectorAll('input, textarea, select').forEach(el => {
       el.addEventListener('input', () => {
         localStorage.setItem(el.id, el.value);
       });
     });
-
     document.getElementById('data').addEventListener('input', calcularIdade);
 
     function calcularIdade() {
       const dataInput = document.getElementById('data').value.trim();
       const idadeCampo = document.getElementById('idade');
-      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/; // Suporta dd/mm/aaaa, dd-mm-aaaa, dd.mm.aaaa, e dd mm aaaa
+      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/;
       const match = dataInput.match(dataRegex);
 
       if (match) {
@@ -147,11 +335,9 @@
         const hoje = new Date();
         let idade = hoje.getFullYear() - nascimento.getFullYear();
         const m = hoje.getMonth() - nascimento.getMonth();
-
         if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
           idade--;
         }
-
         idadeCampo.value = `${idade} anos`;
       } else {
         idadeCampo.value = '';
@@ -160,7 +346,7 @@
 
     function limparCampos(aprovacao = false) {
       if (!aprovacao && !confirm("Tem certeza de que deseja limpar todos os campos?")) {
-        return; // Se o usuário cancelar, não limpa os campos
+        return;
       }
       ['nome', 'data', 'idade', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
         document.getElementById(id).value = '';
@@ -170,10 +356,11 @@
 
     function limparResultado(id) {
       if (!confirm("Tem certeza de que deseja limpar este campo de resultados?")) {
-        return; // Se o usuário cancelar, não limpa o campo
+        return;
       }
       document.getElementById(id).value = '';
       localStorage.removeItem(id);
+      atualizarContadorVisual();
     }
 
     function copiarTexto(id) {
@@ -200,31 +387,222 @@
       }
 
       if (status === 'aprovado') {
-        const resultado = `Nome do Aprovado (IRL): ${nome}\nData de Nascimento: ${data} (${idade})\nID Discord: ${discord} |<@${discord}>\nNúmero da Entrevista: ${entrevista}\nRumo: ${rumo}\n${observacoes ? 'Observações: ' + observacoes : ''}\n`;
-        document.getElementById('resultadoAprovados').value += `\n${resultado}\n`;
-        localStorage.setItem('resultadoAprovados', document.getElementById('resultadoAprovados').value);
+        const resultado = `**Nome do Aprovado (IRL):** ${nome}\n**Data de Nascimento:** ${data} (${idade})\n**ID Discord:** ${discord} |<@${discord}>\n**Número da Entrevista:** ${entrevista}\n**Rumo:** ${rumo}\n${observacoes ? '**Observações:** ' + observacoes : ''}`;
+        const resultadoAprovados = document.getElementById('resultadoAprovados');
+        resultadoAprovados.value += (resultadoAprovados.value.trim() ? '\n\n' : '') + resultado;
+        localStorage.setItem('resultadoAprovados', resultadoAprovados.value);
       } else {
-        const detalhado = `Nome do reprovado (IRL): ${nome}\nData de Nascimento: ${data} (${idade})\nID Discord: ${discord} |<@${discord}>\nNúmero da Entrevista: ${entrevista}\nRumo: ${rumo}\n${observacoes ? 'Observações: ' + observacoes : ''}\n`;
-        const simples = `${discord} | <@${discord}> - Reprovado Entrevista: ${observacoes ? observacoes : ''}`;
+        const detalhado = `**Nome do Reprovado (IRL):** ${nome}\n**Data de Nascimento:** ${data} (${idade})\n**ID Discord:** ${discord} |<@${discord}>\n**Número da Entrevista:** ${entrevista}\n**Rumo:** ${rumo}\n${observacoes ? '**Observações:** ' + observacoes : ''}`;
+        const simples = `${discord} | <@${discord}> - **Reprovado Entrevista:** ${observacoes ? observacoes : ''}`;
 
-        document.getElementById('resultadoReprovadosDetalhado').value += `\n${detalhado}\n`;
-        document.getElementById('resultadoReprovadosSimples').value += `\n${simples}\n`;
+        const resultadoDetalhado = document.getElementById('resultadoReprovadosDetalhado');
+        resultadoDetalhado.value += (resultadoDetalhado.value.trim() ? '\n\n' : '') + detalhado;
+        const resultadoSimples = document.getElementById('resultadoReprovadosSimples');
+        resultadoSimples.value += (resultadoSimples.value.trim() ? '\n\n' : '') + simples;
 
-        localStorage.setItem('resultadoReprovadosDetalhado', document.getElementById('resultadoReprovadosDetalhado').value);
-        localStorage.setItem('resultadoReprovadosSimples', document.getElementById('resultadoReprovadosSimples').value);
+        localStorage.setItem('resultadoReprovadosDetalhado', resultadoDetalhado.value);
+        localStorage.setItem('resultadoReprovadosSimples', resultadoSimples.value);
       }
 
+      // Salva no storage geral entrevistas
+      let entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
+      entrevistasGerais.push({
+        nome,
+        data,
+        idade,
+        discord,
+        entrevista,
+        rumo,
+        observacoes,
+        status,
+        timestamp: new Date().toLocaleString()
+      });
+      localStorage.setItem('entrevistasGerais', JSON.stringify(entrevistasGerais));
+
+      atualizarContadores();
+      atualizarContadorVisual();
       limparCampos(true);
     }
 
     function formatarData(data) {
-      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/; // Suporta dd/mm/aaaa, dd-mm-aaaa, dd.mm.aaaa, e dd mm aaaa
+      const dataRegex = /(\d{2})[-\/.\s]?(\d{2})[-\/.\s]?(\d{4})/;
       const match = data.match(dataRegex);
       if (match) return `${match[1]}/${match[2]}/${match[3]}`;
       else {
         alert('Formato de data inválido. Use: DD-MM-YYYY, DD/MM/YYYY ou DD MM AAAA.');
         return '';
       }
+    }
+
+    function limparStorageGeral() {
+      if (!confirm("Tem certeza de que deseja limpar TODOS os dados salvos das entrevistas (storage geral)?")) {
+        return;
+      }
+      localStorage.removeItem('entrevistasGerais');
+      alert('Storage geral das entrevistas limpa. Os campos e resultados permanecem inalterados.');
+      atualizarContadores();
+    }
+
+    // Contador do Storage Geral (acumula até clicar em Nova Entrevista)
+    function atualizarContadores() {
+      const entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
+      const total = entrevistasGerais.length;
+      const aprovados = entrevistasGerais.filter(e => e.status === 'aprovado').length;
+      const reprovados = entrevistasGerais.filter(e => e.status === 'reprovado').length;
+
+      // Por rumo
+      const countByRumo = rumo => entrevistasGerais.filter(e => e.status === 'aprovado' && (e.rumo||'').toLowerCase() === rumo).length;
+      const countOutro = () => entrevistasGerais.filter(e => {
+        const r = (e.rumo||'').toLowerCase();
+        return e.status === 'aprovado' && !['policia','mecanica','hospital','ilegal'].includes(r);
+      }).length;
+
+      // Formulário
+      document.getElementById('totalGeral').textContent = total;
+      document.getElementById('aprovadosGeral').textContent = aprovados;
+      document.getElementById('reprovadosGeral').textContent = reprovados;
+      document.getElementById('aprovadosPolicia').textContent = countByRumo('policia');
+      document.getElementById('aprovadosMecanica').textContent = countByRumo('mecanica');
+      document.getElementById('aprovadosHospital').textContent = countByRumo('hospital');
+      document.getElementById('aprovadosIlegal').textContent = countByRumo('ilegal');
+      document.getElementById('aprovadosOutro').textContent = countOutro();
+    }
+
+    // Contador Visual (apenas o que está nos campos visuais)
+    function atualizarContadorVisual() {
+      // Aprovados
+      const aprovadosText = document.getElementById('resultadoAprovados').value.trim();
+      let aprovados = 0, policia = 0, mecanica = 0, hospital = 0, ilegal = 0, outro = 0;
+      if (aprovadosText) {
+        const blocos = aprovadosText.split(/\n\s*\n/).filter(b=>b.trim());
+        aprovados = blocos.length;
+        blocos.forEach(b=>{
+          // Procura a linha do rumo no padrão do campo visual
+          const match = b.match(/[*_]*Rumo:[*_]*\s*(.*)/i);
+          let rumo = match ? match[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
+          if (rumo.startsWith("polic")) policia++;
+          else if (rumo.startsWith("mecan")) mecanica++;
+          else if (rumo.startsWith("hospital")) hospital++;
+          else if (rumo.startsWith("ilegal")) ilegal++;
+          else outro++;
+        });
+      }
+      document.getElementById('aprovadosVisual').textContent = aprovados;
+      document.getElementById('aprovadosPoliciaVisual').textContent = policia;
+      document.getElementById('aprovadosMecanicaVisual').textContent = mecanica;
+      document.getElementById('aprovadosHospitalVisual').textContent = hospital;
+      document.getElementById('aprovadosIlegalVisual').textContent = ilegal;
+      document.getElementById('aprovadosOutroVisual').textContent = outro;
+
+      // Reprovados
+      const reprovadosText = document.getElementById('resultadoReprovadosDetalhado').value.trim();
+      let reprovados = 0;
+      if (reprovadosText) {
+        reprovados = reprovadosText.split(/\n\s*\n/).filter(b=>b.trim()).length;
+      }
+      document.getElementById('reprovadosVisual').textContent = reprovados;
+    }
+
+    // Atualiza contador visual ao alterar textarea de aprovados/reprovados
+    document.addEventListener('DOMContentLoaded', () => {
+      ['resultadoAprovados', 'resultadoReprovadosDetalhado'].forEach(id => {
+        document.getElementById(id).addEventListener('input', atualizarContadorVisual);
+      });
+      atualizarContadorVisual();
+    });
+
+    // Copia por rumo — storage geral ou campo visual
+    function copiarPorRumo(rumo, visual) {
+      if (visual) {
+        // Copia do campo visual de aprovados!
+        const aprovadosText = document.getElementById('resultadoAprovados').value.trim();
+        if (!aprovadosText) {
+          alert('Nenhum aprovado no campo visual.');
+          return;
+        }
+        const blocos = aprovadosText.split(/\n\s*\n/).filter(b=>b.trim());
+        let conhecidos = ['policia','mecanica','hospital','ilegal'];
+        let resultado = [];
+        blocos.forEach(b=>{
+          const match = b.match(/[*_]*Rumo:[*_]*\s*(.*)/i);
+          let rumoValor = match ? match[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
+          if (rumo === 'Outro') {
+            if (!conhecidos.includes(rumoValor)) resultado.push(b);
+          } else {
+            if (rumoValor.startsWith(rumo.toLowerCase())) resultado.push(b);
+          }
+        });
+        if (resultado.length === 0) {
+          alert(`Nenhum aprovado visual para o rumo: ${rumo}`);
+        } else {
+          const tempTextarea = document.createElement('textarea');
+          tempTextarea.value = resultado.join('\n\n');
+          document.body.appendChild(tempTextarea);
+          tempTextarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempTextarea);
+          alert(`Texto do campo visual copiado para o rumo: ${rumo}`);
+        }
+      } else {
+        // Copia do storage geral (como já era)
+        let entrevistas = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
+        if (rumo === 'Outro') {
+          const conhecidos = ['Policia','Mecanica','Hospital','Ilegal'];
+          entrevistas = entrevistas.filter(e => e.rumo && !conhecidos.includes(e.rumo) && e.status === 'aprovado');
+        } else {
+          entrevistas = entrevistas.filter(e => (e.rumo||'').toLowerCase() === rumo.toLowerCase() && e.status === 'aprovado');
+        }
+        if (entrevistas.length === 0) {
+          alert(`Nenhuma entrevista aprovada salva para o rumo: ${rumo}`);
+          return;
+        }
+        let texto = '';
+        entrevistas.forEach(e => {
+          texto += `**Nome do Aprovado (IRL):** ${e.nome}\n**Data de Nascimento:** ${e.data} (${e.idade})\n**ID Discord:** ${e.discord} |<@${e.discord}>\n**Número da Entrevista:** ${e.entrevista}\n**Rumo:** ${e.rumo}\n`;
+          if(e.observacoes) texto += `**Observações:** ${e.observacoes}\n`;
+          texto += '\n';
+        });
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = texto.trim();
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        alert(`Texto copiado para o rumo: ${rumo}`);
+      }
+    }
+
+    // Salvar todo o conteúdo da entrevista com data/hora em arquivo txt
+    function salvarTxtComDataHora() {
+      const entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
+      if (entrevistasGerais.length === 0) {
+        alert("Nenhuma entrevista salva para salvar.");
+        return;
+      }
+      const dataHoraAgora = new Date().toLocaleString();
+
+      let texto = `--- Entrevistas Salvas em: ${dataHoraAgora} ---\n\n`;
+
+      entrevistasGerais.forEach(e => {
+        texto += `${e.status === 'aprovado' ? '**Nome do Aprovado (IRL):**' : '**Nome do Reprovado (IRL):**'} ${e.nome}\n`;
+        texto += `**Data de Nascimento:** ${e.data} (${e.idade})\n`;
+        texto += `**ID Discord:** ${e.discord} |<@${e.discord}>\n`;
+        texto += `**Número da Entrevista:** ${e.entrevista}\n`;
+        texto += `**Rumo:** ${e.rumo}\n`;
+        if (e.observacoes) texto += `**Observações:** ${e.observacoes}\n`;
+        texto += `**Status:** ${e.status}\n`;
+        texto += `**Salvo em:** ${e.timestamp}\n\n`;
+      });
+
+      const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `entrevistas_${dataHoraAgora.replace(/[\/:\s]/g, "_")}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
