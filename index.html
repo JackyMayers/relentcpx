@@ -32,15 +32,19 @@
       color: var(--text);
       box-sizing: border-box;
     }
-    /* NAV element removed */
-    /* HR element removed */
+    /* NAV REMOVIDA */
+    hr {
+      border: none;
+      border-top: 1px solid #222a35;
+      margin: 0 0 1.4em 0;
+    }
     .container {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2.2em;
       max-width: 1400px;
       margin: auto;
-      margin-top: 1.5em; /* Adjusted margin-top since nav is gone */
+      margin-top: 1.5em;
     }
     @media (max-width: 1100px) {
       .container {
@@ -258,7 +262,7 @@
         padding: 1.2em 0.5em 1em 0.5em;
         min-width: 0;
       }
-      /* NAV element removed */
+      /* NAV REMOVIDA */
       .images-container img {
         width: 70px;
       }
@@ -269,9 +273,9 @@
     .form .input-group {
       display: flex;
       gap: 1em;
+      flex-wrap: wrap; /* ADICIONADO: Permite quebra de linha para os campos */
     }
     .form .input-group > * { flex: 1 1 0; }
-
     /* Ajuste para botões principais */
     .botoes-principais {
         display: flex;
@@ -286,6 +290,7 @@
   </style>
 </head>
 <body>
+  <hr>
   <div class="container">
     <form class="form" autocomplete="off" onsubmit="return false;">
       <h2>Entrevista Complexo XP</h2>
@@ -296,6 +301,7 @@
       </div>
       <div class="input-group">
         <input type="text" id="discord" placeholder="ID Discord" autocomplete="off" />
+        <input type="text" id="nomePersonagem" placeholder="Nome do Personagem (RP)" autocomplete="off" />
         <input type="text" id="entrevista" placeholder="Nº da Entrevista" autocomplete="off" />
       </div>
       <div class="input-group">
@@ -310,8 +316,7 @@
         <input type="text" id="rumoOutro" placeholder="Outro Rumo (se aplicável)" autocomplete="off" />
       </div>
       <textarea id="observacoes" placeholder="Observações ou motivo da reprovação..."></textarea>
-      
-      <div class="botoes-principais">
+            <div class="botoes-principais">
         <button class="aprovar" onclick="adicionar('aprovado')" type="button">Aprovar</button>
         <button class="reprovar" onclick="adicionar('reprovado')" type="button">Reprovar</button>
         <button class="limpar" onclick="limparCampos()" type="button">Limpar Tudo</button>
@@ -334,7 +339,7 @@
           <span style="color:#4caf50;font-weight:bold;">✅</span> Todos os dados de aprovados e reprovados de todas as entrevistas ficam salvos, mesmo que você limpe os campos visuais. Esses dados só serão apagados ao clicar em <b>"Nova Entrevista"</b>.<br><br>
           <span style="color:#ffb300;font-weight:bold;">⚠️</span> Limpar os campos visuais não apaga os dados salvos das entrevistas.<br><br>
           <span style="color:#4f8cff;font-weight:bold;">💾</span> <b>Salvar entrevista completa</b> salva todas as entrevistas acumuladas no painel geral, não apenas as informações visuais atuais.<br><br>
-          <span style="color:#ffe082;font-weight:bold;">ℹ️</span> Aqui está o documento que deve ser repassado para o entrevistado: <a href="https://docs.google.com/document/d/1FRO7mZaNyVMSYKPTDAvXHE1kXz14GlOz5VGh7FhR-Kg/edit?pli=1&tab=t.0" style="color: red;">Regras básicas.</a>
+          <span style="color:#ffe082;font-weight:bold;">ℹ️</span> Aqui está o documento que deve ser repassado para o entrevistado: <a href="https://docs.google.com/document/d/1FRO7mZaNyVMSYKPTDAvXHE1kXz14GlOz5VGh7FhR-Kg/edit?pli=1&tab=t.0" style="color: red;" target="_blank">Regras básicas.</a>
         </p>
       </div>
       <div class="botoes-rumo">
@@ -370,14 +375,12 @@
         <button class="copiar-visual" onclick="copiarTexto('resultadoAprovados')" type="button">Copiar</button>
         <button class="limpar-individual" onclick="limparResultado('resultadoAprovados')" type="button">Limpar</button>
       </div>
-
       <h3>Reprovados (Detalhado)</h3>
       <textarea id="resultadoReprovadosDetalhado" aria-label="Reprovados Detalhado"></textarea>
       <div class="custom-row-btns">
         <button class="copiar-visual" onclick="copiarTexto('resultadoReprovadosDetalhado')" type="button">Copiar</button>
         <button class="limpar-individual" onclick="limparResultado('resultadoReprovadosDetalhado')" type="button">Limpar</button>
       </div>
-
       <h3>Reprovados (ID e Motivo)</h3>
       <textarea id="resultadoReprovadosSimples" aria-label="Reprovados Simples"></textarea>
       <div class="custom-row-btns">
@@ -409,8 +412,8 @@
   </footer>
   <script>
     window.onload = () => {
-      // Removido 'discordReprovarRapido' do localStorage.getItem
-      ['nome', 'data', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
+      // Adicionado 'nomePersonagem' ao localStorage.getItem para carregar ao iniciar
+      ['nome', 'data', 'discord', 'nomePersonagem', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
         if (localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
       });
       ['resultadoAprovados', 'resultadoReprovadosDetalhado', 'resultadoReprovadosSimples'].forEach(id => {
@@ -420,11 +423,13 @@
       atualizarContadores();
       atualizarContadorVisual();
     };
+
     document.querySelectorAll('input, textarea, select').forEach(el => {
       el.addEventListener('input', () => {
         localStorage.setItem(el.id, el.value);
       });
     });
+
     document.getElementById('data').addEventListener('input', calcularIdade);
 
     function calcularIdade() {
@@ -449,18 +454,20 @@
 
     function limparCampos(aprovacao = false) {
       if (!aprovacao && !confirm("Limpar todos os campos?")) return;
-      // Removido 'discordReprovarRapido' da lista de campos a limpar
-      ['nome', 'data', 'idade', 'discord', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
+      // Adicionado 'nomePersonagem' à lista de campos a limpar
+      ['nome', 'data', 'idade', 'discord', 'nomePersonagem', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
         document.getElementById(id).value = '';
         if (!aprovacao) localStorage.removeItem(id);
       });
     }
+
     function limparResultado(id) {
       if (!confirm("Limpar este campo de resultados?")) return;
       document.getElementById(id).value = '';
       localStorage.removeItem(id);
       atualizarContadorVisual();
     }
+
     function copiarTexto(id) {
       const texto = document.getElementById(id);
       texto.select();
@@ -469,17 +476,19 @@
       texto.blur();
       alert('Texto copiado!');
     }
+
     function adicionar(status) {
       const nome = document.getElementById('nome').value.trim();
       const data = formatarData(document.getElementById('data').value.trim());
       const idade = document.getElementById('idade').value.trim();
       const discord = document.getElementById('discord').value.trim();
+      const nomePersonagem = document.getElementById('nomePersonagem').value.trim(); // Pega o valor do novo campo
       const entrevista = document.getElementById('entrevista').value.trim();
       const rumoSelect = document.getElementById('rumo').value;
       const rumoOutro = document.getElementById('rumoOutro').value.trim();
+      const observacoes = document.getElementById('observacoes').value.trim();
       // Determina o rumo final, se 'Outro' for selecionado e rumoOutro for preenchido
       const rumo = (rumoSelect === 'Outro' && rumoOutro) ? rumoOutro : rumoSelect;
-      const observacoes = document.getElementById('observacoes').value.trim();
 
       // Validação: ID Discord é sempre obrigatório para qualquer ação.
       if (!discord) {
@@ -504,6 +513,8 @@
         if (discord) resultadoAprovadosStr.push(`**ID Discord:** ${discord} |<@${discord}>`);
         if (entrevista) resultadoAprovadosStr.push(`**Número da Entrevista:** ${entrevista}`);
         if (rumo) resultadoAprovadosStr.push(`**Rumo:** ${rumo}`);
+        // Nome do Personagem depois do Rumo e com formatação pedida
+        if (nomePersonagem) resultadoAprovadosStr.push(`**Nome do Personagem :** ${nomePersonagem}`);
         if (observacoes) resultadoAprovadosStr.push(`**Observações:** ${observacoes}`);
 
         const resultadoAprovados = document.getElementById('resultadoAprovados');
@@ -516,6 +527,8 @@
         if (discord) resultadoDetalhadoStr.push(`**ID Discord:** ${discord} |<@${discord}>`);
         if (entrevista) resultadoDetalhadoStr.push(`**Número da Entrevista:** ${entrevista}`);
         if (rumo) resultadoDetalhadoStr.push(`**Rumo:** ${rumo}`);
+        // Nome do Personagem depois do Rumo e com formatação pedida
+        if (nomePersonagem) resultadoDetalhadoStr.push(`**Nome do Personagem :** ${nomePersonagem}`);
         if (observacoes) resultadoDetalhadoStr.push(`**Observações:** ${observacoes}`);
         else resultadoDetalhadoStr.push(`**Observações:** Motivo não informado.`); // Sempre incluir motivo na detalhada
 
@@ -529,14 +542,15 @@
         resultadoSimples.value += (resultadoSimples.value.trim() ? '\n\n' : '') + resultadoSimplesStr.join('\n');
         localStorage.setItem('resultadoReprovadosSimples', resultadoSimples.value);
       }
-      
+
       // Salva no storage geral entrevistas
       let entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
       entrevistasGerais.push({
-        nome: nome, // Salva o valor real, mesmo que vazio
+        nome: nome,
         data: data,
         idade: idade,
         discord: discord,
+        nomePersonagem: nomePersonagem, // Salva o nome do personagem no storage geral
         entrevista: entrevista,
         rumo: rumo,
         observacoes: observacoes,
@@ -544,6 +558,7 @@
         timestamp: new Date().toLocaleString()
       });
       localStorage.setItem('entrevistasGerais', JSON.stringify(entrevistasGerais));
+
       atualizarContadores();
       atualizarContadorVisual();
       limparCampos(true);
@@ -557,12 +572,14 @@
         return '';
       }
     }
+
     function limparStorageGeral() {
       if (!confirm("Limpar TODOS os dados salvos das entrevistas?")) return;
       localStorage.removeItem('entrevistasGerais');
       alert('Storage geral das entrevistas limpa. Os campos e resultados permanecem inalterados.');
       atualizarContadores();
     }
+
     function atualizarContadores() {
       const entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
       const total = entrevistasGerais.length;
@@ -571,8 +588,9 @@
       const countByRumo = rumo => entrevistasGerais.filter(e => e.status === 'aprovado' && (e.rumo||'').toLowerCase() === rumo.toLowerCase()).length;
       const countOutro = () => entrevistasGerais.filter(e => {
         const r = (e.rumo||'').toLowerCase();
-        return e.status === 'aprovado' && !['policia','mecanica','hospital','ilegal'].includes(r) && r !== ''; // Adicionado r !== '' para não contar vazios como "Outro"
+        return e.status === 'aprovado' && !['policia','mecanica','hospital','ilegal'].includes(r);
       }).length;
+
       document.getElementById('totalGeral').textContent = total;
       document.getElementById('aprovadosGeral').textContent = aprovados;
       document.getElementById('reprovadosGeral').textContent = reprovados;
@@ -582,9 +600,11 @@
       document.getElementById('aprovadosIlegal').textContent = countByRumo('ilegal');
       document.getElementById('aprovadosOutro').textContent = countOutro();
     }
+
     function atualizarContadorVisual() {
       const aprovadosText = document.getElementById('resultadoAprovados').value.trim();
       let aprovados = 0, policia = 0, mecanica = 0, hospital = 0, ilegal = 0, outro = 0;
+
       if (aprovadosText) {
         const blocos = aprovadosText.split(/\n\s*\n/).filter(b=>b.trim());
         aprovados = blocos.length;
@@ -604,20 +624,22 @@
       document.getElementById('aprovadosHospitalVisual').textContent = hospital;
       document.getElementById('aprovadosIlegalVisual').textContent = ilegal;
       document.getElementById('aprovadosOutroVisual').textContent = outro;
-      const reprovadosText = document.getElementById('resultadoReprovadosDetalhado').value.trim();
 
+      const reprovadosText = document.getElementById('resultadoReprovadosDetalhado').value.trim();
       let reprovadosDetalhadoCount = 0;
       if (reprovadosText) {
         reprovadosDetalhadoCount = reprovadosText.split(/\n\s*\n/).filter(b=>b.trim()).length;
       }
       document.getElementById('reprovadosVisual').textContent = reprovadosDetalhadoCount;
     }
+
     document.addEventListener('DOMContentLoaded', () => {
       ['resultadoAprovados', 'resultadoReprovadosDetalhado', 'resultadoReprovadosSimples'].forEach(id => {
         document.getElementById(id).addEventListener('input', atualizarContadorVisual);
       });
       atualizarContadorVisual();
     });
+
     function copiarPorRumo(rumo, visual) {
       if (visual) {
         const aprovadosText = document.getElementById('resultadoAprovados').value.trim();
@@ -629,7 +651,7 @@
           const match = b.match(/[*_]*Rumo:[*_]*\s*(.*)/i);
           let rumoValor = match ? match[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
           if (rumo === 'Outro') {
-            if (!conhecidos.includes(rumoValor) && rumoValor) resultado.push(b); // Adiciona se for "outro" e tiver valor
+            if (!conhecidos.includes(rumoValor) && rumoValor) resultado.push(b);
           } else {
             if (rumoValor.startsWith(rumo.toLowerCase())) resultado.push(b);
           }
@@ -665,6 +687,8 @@
           if (e.discord) entry.push(`**ID Discord:** ${e.discord} |<@${e.discord}>`);
           if (e.entrevista) entry.push(`**Número da Entrevista:** ${e.entrevista}`);
           if (e.rumo) entry.push(`**Rumo:** ${e.rumo}`);
+          // Nome do Personagem depois do Rumo e com formatação pedida
+          if (e.nomePersonagem) entry.push(`**Nome do Personagem :** ${e.nomePersonagem}`);
           if (e.observacoes) entry.push(`**Observações:** ${e.observacoes}`);
           texto += entry.join('\n') + '\n\n';
         });
@@ -677,6 +701,7 @@
         alert(`Texto copiado para o rumo: ${rumo}`);
       }
     }
+
     function salvarTxtComDataHora() {
       const entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
       if (entrevistasGerais.length === 0) {
@@ -687,14 +712,15 @@
       let texto = `--- Entrevistas Salvas em: ${dataHoraAgora} ---\n\n`;
       entrevistasGerais.forEach(e => {
         let entry = [];
-        // Para o TXT geral, sempre mostra o status e os campos que foram preenchidos (com fallback para "Não Informado" se não preenchido)
-        entry.push(`${e.status === 'aprovado' ? '**Nome do Aprovado (IRL):**' : '**Nome do Reprovado (IRL):**'} ${e.nome || 'Não Informado'}`); 
-        if (e.data) entry.push(`**Data de Nascimento:** ${e.data} (${e.idade || 'N/A'})`);
+        entry.push(`${e.status === 'aprovado' ? '**Nome do Aprovado (IRL):**' : '**Nome do Reprovado (IRL):**'} ${e.nome || 'Não Informado'}`);
+        if (e.data) entry.push(`**Data de Nascimento:** ${e.data} (${e.idade})`);
         entry.push(`**ID Discord:** ${e.discord} |<@${e.discord}>`);
         if (e.entrevista) entry.push(`**Número da Entrevista:** ${e.entrevista}`);
         if (e.rumo) entry.push(`**Rumo:** ${e.rumo}`);
+        // Nome do Personagem depois do Rumo e com formatação pedida
+        if (e.nomePersonagem) entry.push(`**Nome do Personagem :** ${e.nomePersonagem}`);
         if (e.observacoes) entry.push(`**Observações:** ${e.observacoes}`);
-        entry.push(`**Status:** ${e.status.charAt(0).toUpperCase() + e.status.slice(1)}`); // Capitaliza o status
+        entry.push(`**Status:** ${e.status}`);
         entry.push(`**Salvo em:** ${e.timestamp}`);
         texto += entry.join('\n') + '\n\n';
       });
@@ -708,21 +734,17 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
+
     function copiarReprovadosGeral() {
       const entrevistasGerais = JSON.parse(localStorage.getItem('entrevistasGerais') || '[]');
       const reprovados = entrevistasGerais.filter(e => e.status === 'reprovado');
-      if (!reprovados.length) {
-        alert('Nenhum reprovado salvo no geral.');
+      if (reprovados.length === 0) {
+        alert("Nenhuma entrevista reprovada salva.");
         return;
       }
       let texto = '';
       reprovados.forEach(e => {
-        let entry = [];
-        if (e.nome) entry.push(`Nome: ${e.nome}`);
-        entry.push(`Discord: ${e.discord}`);
-        if (e.rumo) entry.push(`Rumo: ${e.rumo}`);
-        entry.push(`Motivo: ${e.observacoes || 'Motivo não informado.'}`); // Mantido "Motivo não informado"
-        texto += entry.join(' | ') + '\n';
+        texto += `${e.discord} | <@${e.discord}> - **Reprovado Entrevista:** ${e.observacoes ? e.observacoes : 'Motivo não informado.'}\n\n`;
       });
       const tempTextarea = document.createElement('textarea');
       tempTextarea.value = texto.trim();
@@ -730,7 +752,7 @@
       tempTextarea.select();
       document.execCommand('copy');
       document.body.removeChild(tempTextarea);
-      alert('Lista de reprovados geral copiada!');
+      alert('Reprovados gerais copiados!');
     }
   </script>
 </body>
