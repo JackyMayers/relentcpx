@@ -32,33 +32,12 @@
       color: var(--text);
       box-sizing: border-box;
     }
-    nav { /* This entire nav block is effectively unused now */
-      background: var(--bg-secondary);
-      padding: 0.7em 0;
-      border-radius: 0 0 var(--radius) var(--radius);
-      box-shadow: var(--shadow2);
-      margin-bottom: 0.8em;
-      display: flex;
-      justify-content: center;
-      gap: 1.5em;
-      font-size: 1.07em;
-    }
-    nav a { /* This entire nav a block is effectively unused now */
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      padding: 0.3em 0.6em;
-      border-radius: 6px;
-      transition: background var(--transition), color var(--transition);
-    }
-    nav a:hover { /* This entire nav a:hover block is effectively unused now */
-      background: var(--accent);
-      color: #fff;
-    }
-    hr { /* This hr block is effectively unused now as <hr> is removed */
+    /* NAV REMOVIDA */
+    hr {
       border: none;
       border-top: 1px solid #222a35;
-      margin: 0 0 1.4em 0;
+      /* Ajuste a margem superior para compensar a remoção da nav */
+      margin: 0 0 1.4em 0; /* Mantenha se quiser uma linha divisória, ou remova também */
     }
     .container {
       display: grid;
@@ -66,7 +45,7 @@
       gap: 2.2em;
       max-width: 1400px;
       margin: auto;
-      margin-top: 1.5em; /* Adjusted margin-top since nav is removed */
+      margin-top: 1.5em; /* Ajuste a margem superior conforme necessário */
     }
     @media (max-width: 1100px) {
       .container {
@@ -298,11 +277,7 @@
         padding: 1.2em 0.5em 1em 0.5em;
         min-width: 0;
       }
-      nav {
-        flex-direction: column;
-        gap: 0.4em;
-        font-size: 1em;
-      }
+      /* NAV REMOVIDA */
       .images-container img {
         width: 70px;
       }
@@ -327,21 +302,30 @@
         flex: 1;
         min-width: 100px;
     }
+    /* Estilo para campos de largura total */
+    .input-full-width {
+        width: 100%;
+        flex: 1 0 100% !important; /* Garante que ocupe a largura total no flexbox */
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <hr> <div class="container">
     <form class="form" autocomplete="off" onsubmit="return false;">
       <h2>Entrevista Complexo XP</h2>
+      <div>
+        <input type="text" id="nome" placeholder="Nome Completo (IRL)" autocomplete="off" class="input-full-width" />
+      </div>
       <div class="input-group">
-        <input type="text" id="nome" placeholder="Nome Completo (IRL)" autocomplete="off" />
         <input type="text" id="data" placeholder="Nascimento (dd mm aaaa)" autocomplete="off" />
         <input type="text" id="idade" placeholder="Idade" disabled />
       </div>
       <div class="input-group">
         <input type="text" id="discord" placeholder="ID Discord" autocomplete="off" />
-        <input type="text" id="nomePersonagem" placeholder="Nome do Personagem (RP)" autocomplete="off" />
         <input type="text" id="entrevista" placeholder="Nº da Entrevista" autocomplete="off" />
+      </div>
+      <div>
+        <input type="text" id="nomePersonagem" placeholder="Nome do Personagem (RP)" autocomplete="off" class="input-full-width" />
       </div>
       <div class="input-group">
         <select id="rumo">
@@ -454,7 +438,7 @@
   </footer>
   <script>
     window.onload = () => {
-      // Adicionado 'nomePersonagem' ao localStorage.getItem para carregar ao iniciar
+      // Carrega todos os campos do localStorage, incluindo 'entrevista'
       ['nome', 'data', 'discord', 'nomePersonagem', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
         if (localStorage.getItem(id)) document.getElementById(id).value = localStorage.getItem(id);
       });
@@ -506,6 +490,7 @@
 
     function limparCampos(aprovacao = false) {
       if (!aprovacao && !confirm("Tem certeza que deseja limpar todos os campos?")) return;
+      // Inclui 'entrevista' e 'nomePersonagem' aqui para limpeza e remoção do localStorage
       ['nome', 'data', 'idade', 'discord', 'nomePersonagem', 'entrevista', 'rumo', 'rumoOutro', 'observacoes'].forEach(id => {
         document.getElementById(id).value = '';
         if (!aprovacao) localStorage.removeItem(id);
@@ -540,7 +525,7 @@
       const idade = document.getElementById('idade').value.trim();
       const discord = document.getElementById('discord').value.trim();
       const nomePersonagem = document.getElementById('nomePersonagem').value.trim();
-      const entrevista = document.getElementById('entrevista').value.trim();
+      const entrevista = document.getElementById('entrevista').value.trim(); // Número da Entrevista
       const rumoSelect = document.getElementById('rumo').value;
       const rumoOutro = document.getElementById('rumoOutro').value.trim();
       const observacoes = document.getElementById('observacoes').value.trim();
@@ -560,9 +545,9 @@
         }
       }
 
-      // Validação específica para aprovação
-      if (status === 'aprovado' && (!nome || !data || !entrevista || !rumo)) {
-        alert("Para aprovar, preencha o Nome, Data de Nascimento, Nº da Entrevista e Rumo.");
+      // Validação específica para aprovação: Agora exige Nome do Personagem (RP) E Número da Entrevista
+      if (status === 'aprovado' && (!nome || !data || !nomePersonagem || !entrevista || !rumo)) {
+        alert("Para aprovar, preencha o Nome, Data de Nascimento, Nº da Entrevista, Nome do Personagem (RP) e Rumo.");
         return;
       }
 
@@ -579,9 +564,9 @@
         if (nome) resultadoAprovadosStr.push(`**Nome do Aprovado (IRL):** ${nome}`);
         if (data) resultadoAprovadosStr.push(`**Data de Nascimento:** ${data} (${idade} anos)`);
         if (discord) resultadoAprovadosStr.push(`**ID Discord:** ${discord} |<@${discord}>`);
-        if (entrevista) resultadoAprovadosStr.push(`**Número da Entrevista:** ${entrevista}`);
+        if (entrevista) resultadoAprovadosStr.push(`**Nº da Entrevista:** ${entrevista}`);
+        if (nomePersonagem) resultadoAprovadosStr.push(`**Nome do Personagem (RP):** ${nomePersonagem}`);
         if (rumo) resultadoAprovadosStr.push(`**Rumo:** ${rumo}`);
-        if (nomePersonagem) resultadoAprovadosStr.push(`**Nome do Personagem :** ${nomePersonagem}`);
         if (observacoes) resultadoAprovadosStr.push(`**Observações:** ${observacoes}`);
 
         const resultadoAprovados = document.getElementById('resultadoAprovados');
@@ -592,9 +577,9 @@
         if (nome) resultadoDetalhadoStr.push(`**Nome do Reprovado (IRL):** ${nome}`);
         if (data) resultadoDetalhadoStr.push(`**Data de Nascimento:** ${data} (${idade} anos)`);
         if (discord) resultadoDetalhadoStr.push(`**ID Discord:** ${discord} |<@${discord}>`);
-        if (entrevista) resultadoDetalhadoStr.push(`**Número da Entrevista:** ${entrevista}`);
+        if (entrevista) resultadoDetalhadoStr.push(`**Nº da Entrevista:** ${entrevista}`);
+        if (nomePersonagem) resultadoDetalhadoStr.push(`**Nome do Personagem (RP):** ${nomePersonagem}`);
         if (rumo) resultadoDetalhadoStr.push(`**Rumo:** ${rumo}`);
-        if (nomePersonagem) resultadoDetalhadoStr.push(`**Nome do Personagem :** ${nomePersonagem}`);
         resultadoDetalhadoStr.push(`**Observações:** ${observacoes ? observacoes : 'Motivo não informado.'}`); // Sempre incluir motivo na detalhada
 
         const resultadoDetalhado = document.getElementById('resultadoReprovadosDetalhado');
@@ -616,7 +601,7 @@
         idade: idade,
         discord: discord,
         nomePersonagem: nomePersonagem,
-        entrevista: entrevista,
+        entrevista: entrevista, // Salva o número da entrevista
         rumo: rumo,
         observacoes: observacoes,
         status: status,
@@ -650,11 +635,11 @@
       const total = entrevistasGerais.length;
       const aprovados = entrevistasGerais.filter(e => e.status === 'aprovado').length;
       const reprovados = entrevistasGerais.filter(e => e.status === 'reprovado').length;
-      
+
       const conhecidosArray = ['policia', 'mecanica', 'hospital', 'ilegal'];
 
       const countByRumo = rumo => entrevistasGerais.filter(e => e.status === 'aprovado' && (e.rumo || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === rumo.toLowerCase()).length;
-      
+
       const countOutro = () => entrevistasGerais.filter(e => {
         const r = (e.rumo || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         return e.status === 'aprovado' && !conhecidosArray.includes(r);
@@ -678,11 +663,11 @@
         const blocos = aprovadosText.split(/\n\s*\n/).filter(b=>b.trim());
         aprovados = blocos.length;
         const conhecidosArray = ['policia', 'mecanica', 'hospital', 'ilegal'];
-        
+
         blocos.forEach(b=>{
           const match = b.match(/[*_]*Rumo:[*_]*\s*(.*)/i);
           let rumo = match ? match[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
-          
+
           if (rumo.startsWith("polic")) policia++;
           else if (rumo.startsWith("mecan")) mecanica++;
           else if (rumo.startsWith("hospital")) hospital++;
@@ -719,11 +704,11 @@
         const blocos = aprovadosText.split(/\n\s*\n/).filter(b=>b.trim());
         const conhecidosArray = ['policia','mecanica','hospital','ilegal'];
         let resultado = [];
-        
+
         blocos.forEach(b=>{
           const match = b.match(/[*_]*Rumo:[*_]*\s*(.*)/i);
           let rumoValor = match ? match[1].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
-          
+
           if (rumoParam === 'Outro') {
             if (rumoValor && !conhecidosArray.some(c => rumoValor.startsWith(c))) resultado.push(b);
           } else {
@@ -757,9 +742,9 @@
           if (e.nome) entry.push(`**Nome do Aprovado (IRL):** ${e.nome}`);
           if (e.data) entry.push(`**Data de Nascimento:** ${e.data} (${e.idade})`);
           if (e.discord) entry.push(`**ID Discord:** ${e.discord} |<@${e.discord}>`);
-          if (e.entrevista) entry.push(`**Número da Entrevista:** ${e.entrevista}`);
+          if (e.entrevista) entry.push(`**Nº da Entrevista:** ${e.entrevista}`); // Adicionado
+          if (e.nomePersonagem) entry.push(`**Nome do Personagem (RP):** ${e.nomePersonagem}`);
           if (e.rumo) entry.push(`**Rumo:** ${e.rumo}`);
-          if (e.nomePersonagem) entry.push(`**Nome do Personagem :** ${e.nomePersonagem}`);
           if (e.observacoes) entry.push(`**Observações:** ${e.observacoes}`);
           texto += entry.join('\n') + '\n\n';
         });
@@ -780,9 +765,9 @@
         entry.push(`${e.status === 'aprovado' ? '**Nome do Aprovado (IRL):**' : '**Nome do Reprovado (IRL):**'} ${e.nome || 'Não Informado'}`);
         if (e.data) entry.push(`**Data de Nascimento:** ${e.data} (${e.idade})`);
         entry.push(`**ID Discord:** ${e.discord} |<@${e.discord}>`);
-        if (e.entrevista) entry.push(`**Número da Entrevista:** ${e.entrevista}`);
+        if (e.entrevista) entry.push(`**Nº da Entrevista:** ${e.entrevista}`); // Adicionado
+        if (e.nomePersonagem) entry.push(`**Nome do Personagem (RP):** ${e.nomePersonagem}`);
         if (e.rumo) entry.push(`**Rumo:** ${e.rumo}`);
-        if (e.nomePersonagem) entry.push(`**Nome do Personagem :** ${e.nomePersonagem}`);
         if (e.observacoes) entry.push(`**Observações:** ${e.observacoes}`);
         entry.push(`**Status:** ${e.status}`);
         entry.push(`**Salvo em:** ${e.timestamp}`);
