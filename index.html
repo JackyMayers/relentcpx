@@ -546,7 +546,7 @@
       }
 
       // Validação específica para aprovação: Agora exige Nome do Personagem (RP) E Número da Entrevista
-      if (status === 'aprovado' && (!nome || !data || !nomePersonagem || !entrevista || !rumo)) {
+      if (status === 'aprovado' && (!nome || !data || !entrevista || !rumo)) {
         alert("Para aprovar, preencha o Nome, Data de Nascimento, Nº da Entrevista, Nome do Personagem (RP) e Rumo.");
         return;
       }
