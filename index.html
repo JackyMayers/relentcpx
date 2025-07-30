@@ -32,12 +32,33 @@
       color: var(--text);
       box-sizing: border-box;
     }
-    /* NAV foi removida */
-    hr {
+    nav { /* This entire nav block is effectively unused now */
+      background: var(--bg-secondary);
+      padding: 0.7em 0;
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow2);
+      margin-bottom: 0.8em;
+      display: flex;
+      justify-content: center;
+      gap: 1.5em;
+      font-size: 1.07em;
+    }
+    nav a { /* This entire nav a block is effectively unused now */
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.3em 0.6em;
+      border-radius: 6px;
+      transition: background var(--transition), color var(--transition);
+    }
+    nav a:hover { /* This entire nav a:hover block is effectively unused now */
+      background: var(--accent);
+      color: #fff;
+    }
+    hr { /* This hr block is effectively unused now as <hr> is removed */
       border: none;
       border-top: 1px solid #222a35;
-      /* Margem superior ajustada porque a nav foi removida */
-      margin: 0; /* Removido margin-top para que o container comece no topo */
+      margin: 0 0 1.4em 0;
     }
     .container {
       display: grid;
@@ -45,7 +66,7 @@
       gap: 2.2em;
       max-width: 1400px;
       margin: auto;
-      margin-top: 1.5em; /* Mantido para espaçamento inicial do conteúdo */
+      margin-top: 1.5em; /* Adjusted margin-top since nav is removed */
     }
     @media (max-width: 1100px) {
       .container {
@@ -277,7 +298,11 @@
         padding: 1.2em 0.5em 1em 0.5em;
         min-width: 0;
       }
-      /* NAV media query removida */
+      nav {
+        flex-direction: column;
+        gap: 0.4em;
+        font-size: 1em;
+      }
       .images-container img {
         width: 70px;
       }
@@ -577,7 +602,7 @@
         localStorage.setItem('resultadoReprovadosDetalhado', resultadoDetalhado.value);
 
         // Reprovados (ID e Motivo) - ID é obrigatório
-        resultadoSimplesStr.push(`ID: ${discord} | <@${discord}>\nMotivo: ${observacoes ? observacoes : 'Motivo não informado.'}\n\n`);
+        resultadoSimplesStr.push(`ID: ${discord} | <@${discord}>\nReprovado entrevista: ${observacoes ? observacoes : 'Motivo não informado.'}`);
         const resultadoSimples = document.getElementById('resultadoReprovadosSimples');
         resultadoSimples.value += (resultadoSimples.value.trim() ? '\n\n' : '') + resultadoSimplesStr.join('\n');
         localStorage.setItem('resultadoReprovadosSimples', resultadoSimples.value);
@@ -784,7 +809,7 @@
       }
       let texto = '';
       reprovados.forEach(e => {
-        texto += `ID: ${e.discord} | <@${e.discord}>\nMotivo: ${e.observacoes ? e.observacoes : 'Motivo não informado.'}\n\n`;
+        texto += `ID: ${e.discord} | <@${e.discord}>\nReprovado entrevista: ${e.observacoes ? e.observacoes : 'Motivo não informado.'}\n\n`;
       });
       await copiarTextoDirect(texto.trim()); // Usando a função auxiliar de cópia
     }
